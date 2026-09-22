@@ -4,6 +4,10 @@ Local AI Job Application Analyzer powered by Tether's QVAC SDK.
 
 SmartFitz compares a resume with a job description using an on-device QVAC model and produces a practical application analysis locally.
 
+## App URL
+
+http://localhost:3000
+
 ## Features
 
 - Local AI processing with QVAC
@@ -29,10 +33,10 @@ SmartFitz uses:
 
 ## How It Works
 
-Resume + Job Description
-→ SmartFitz
-→ QVAC local AI
-→ Application Analysis
+Resume + Job Description  
+→ SmartFitz  
+→ QVAC local AI  
+→ Application Analysis  
 → Recommendations
 
 ## Installation
