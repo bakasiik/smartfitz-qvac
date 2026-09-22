@@ -1,0 +1,17 @@
+{
+  "name": "smartfitz-qvac",
+  "version": "1.0.0",
+  "description": "SmartFitz - a local AI job application analyzer powered by QVAC.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "web": "node src/server.js",
+    "cli": "node cli.js",
+    "test:qvac": "node test-qvac.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@qvac/sdk": "^0.19.1",
+    "express": "^5.2.1"
+  }
+}

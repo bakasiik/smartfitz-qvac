@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartFitz - Local AI Job Analyzer</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+      color: #172033;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #64748b;
+      margin-bottom: 30px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 260px;
+      padding: 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      resize: vertical;
+      font: inherit;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 15px;
+      border: 0;
+      border-radius: 10px;
+      background: #172033;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    .result {
+      margin-top: 25px;
+      white-space: pre-wrap;
+      line-height: 1.6;
+      background: white;
+      border-radius: 14px;
+      padding: 25px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+      min-height: 120px;
+    }
+
+    .status {
+      margin-top: 15px;
+      color: #64748b;
+    }
+
+    @media (max-width: 700px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>SmartFitz</h1>
+
+    <div class="subtitle">
+      Local AI Job Application Analyzer powered by Tether's QVAC SDK
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <label for="resume">Resume</label>
+        <textarea
+          id="resume"
+          placeholder="Paste the applicant's resume here..."
+        ></textarea>
+      </div>
+
+      <div class="card">
+        <label for="jobDescription">Job Description</label>
+        <textarea
+          id="jobDescription"
+          placeholder="Paste the job description here..."
+        ></textarea>
+      </div>
+    </div>
+
+    <button id="analyzeButton">ANALYZE APPLICATION</button>
+
+    <div id="status" class="status"></div>
+
+    <div id="result" class="result">
+      Your local AI analysis will appear here.
+    </div>
+  </div>
+
+  <script>
+    const button = document.getElementById("analyzeButton");
+    const resume = document.getElementById("resume");
+    const jobDescription = document.getElementById("jobDescription");
+    const result = document.getElementById("result");
+    const status = document.getElementById("status");
+
+    button.addEventListener("click", async () => {
+      if (!resume.value.trim() || !jobDescription.value.trim()) {
+        status.textContent =
+          "Please enter both a resume and a job description.";
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = "ANALYZING...";
+      status.textContent =
+        "Running QVAC locally. The first analysis may take longer while the model loads.";
+      result.textContent = "";
+
+      try {
+        const response = await fetch("/api/analyze", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            resume: resume.value,
+            jobDescription: jobDescription.value
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Analysis failed.");
+        }
+
+        result.textContent = data.result;
+        status.textContent = "Analysis completed locally with QVAC.";
+      } catch (error) {
+        result.textContent = "Error: " + error.message;
+        status.textContent = "";
+      } finally {
+        button.disabled = false;
+        button.textContent = "ANALYZE APPLICATION";
+      }
+    });
+  </script>
+</body>
+</html>
